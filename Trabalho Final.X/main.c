@@ -84,37 +84,49 @@ int main()
        //&&&&&&&&&&&&&&&&&&Final Sensor Luz
      
         //FUNÇÃO DE REGAR PLANTAS
-        //&&&&&&&&&&&&&&&&&& Funcao Sensor solo 1&&&&&&&&&&&&&&&
-        //Cuida estufa 1
-        if(valor_entry3 < 128)
+        if(valor_entry1 < 64)
         {
-            RC6 = 1;
-            __delay_ms(500);
-            RC6 = 0;
+            //&&&&&&&&&&&&&&&&&& Funcao Sensor solo 1&&&&&&&&&&&&&&&
+            //Cuida estufa 1
+            if(valor_entry3 < 128)
+            {
+                RC6 = 1;
+                __delay_ms(500);
+                RC6 = 0;
+            }            
         }
-        //&&&&&&&&&&&&&&&&&& Funcao Sensor solo 2&&&&&&&&&&&&&&&
-        //Cuida estufa 2
-        if(valor_entry4 < 128)
+        if (valor_entry1 < 128)
         {
-            RC7 = 1;
-            __delay_ms(500);
-            RC7 = 0;
-        }  
-        //&&&&&&&&&&&&&&&&&& Funcao Sensor solo 3 &&&&&&&&&&&&&&&
-        //Cuida estufa 3
-        if(valor_entry5 < 128)
+            //&&&&&&&&&&&&&&&&&& Funcao Sensor solo 2&&&&&&&&&&&&&&&
+            //Cuida estufa 2
+            if(valor_entry4 < 128)
+            {
+                RC7 = 1;
+                __delay_ms(500);
+                RC7 = 0;
+            }              
+        }
+        if (valor_entry1 < 192)
         {
-            RC4 = 1;
-            __delay_ms(500);
-            RC4 = 0;
-        }   
-        //&&&&&&&&&&&&&&&&&& Funcao Sensor solo 4 &&&&&&&&&&&&&&&
-        //Cuida estufa 4
-        if(valor_entry6 < 128)
+           //&&&&&&&&&&&&&&&&&& Funcao Sensor solo 3 &&&&&&&&&&&&&&&
+           //Cuida estufa 3
+           if(valor_entry5 < 128)
+           {
+               RC4 = 1;
+               __delay_ms(500);
+               RC4 = 0;
+           }              
+        }
+        if (valor_entry1 < 256)
         {
-            RC5 = 1;
-            __delay_ms(500);
-            RC5 = 0;
+            //&&&&&&&&&&&&&&&&&& Funcao Sensor solo 4 &&&&&&&&&&&&&&&
+            //Cuida estufa 4
+            if(valor_entry6 < 128)
+            {
+                RC5 = 1;
+                __delay_ms(500);
+                RC5 = 0;
+            }        
         }
         //&&&&&&&&&&&&&&&& FIM FUNÇÃO DE REGAR &&&&&&&&&&&&&&&&&&&& 
        
@@ -227,7 +239,6 @@ void recolheTela(void)
     RC3 = 1;
     RC2 = 1;
     RD7 = 1;
-    __delay_ms(500);    
     
     return;
 }
@@ -261,7 +272,6 @@ void expandeTela(void)
     RC3 = 1;
     RC2 = 1;
     RD7 = 1;
-    __delay_ms(500);
     
     return;
 }

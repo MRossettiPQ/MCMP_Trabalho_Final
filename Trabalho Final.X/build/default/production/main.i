@@ -2009,37 +2009,49 @@ int main()
 
 
 
-
-
-        if(valor_entry3 < 128)
+        if(valor_entry1 < 64)
         {
-            RC6 = 1;
-            _delay((unsigned long)((500)*(4000000/4000.0)));
-            RC6 = 0;
+
+
+            if(valor_entry3 < 128)
+            {
+                RC6 = 1;
+                _delay((unsigned long)((500)*(4000000/4000.0)));
+                RC6 = 0;
+            }
         }
-
-
-        if(valor_entry4 < 128)
+        if (valor_entry1 < 128)
         {
-            RC7 = 1;
-            _delay((unsigned long)((500)*(4000000/4000.0)));
-            RC7 = 0;
+
+
+            if(valor_entry4 < 128)
+            {
+                RC7 = 1;
+                _delay((unsigned long)((500)*(4000000/4000.0)));
+                RC7 = 0;
+            }
         }
-
-
-        if(valor_entry5 < 128)
+        if (valor_entry1 < 192)
         {
-            RC4 = 1;
-            _delay((unsigned long)((500)*(4000000/4000.0)));
-            RC4 = 0;
+
+
+           if(valor_entry5 < 128)
+           {
+               RC4 = 1;
+               _delay((unsigned long)((500)*(4000000/4000.0)));
+               RC4 = 0;
+           }
         }
-
-
-        if(valor_entry6 < 128)
+        if (valor_entry1 < 256)
         {
-            RC5 = 1;
-            _delay((unsigned long)((500)*(4000000/4000.0)));
-            RC5 = 0;
+
+
+            if(valor_entry6 < 128)
+            {
+                RC5 = 1;
+                _delay((unsigned long)((500)*(4000000/4000.0)));
+                RC5 = 0;
+            }
         }
 
 
@@ -2152,7 +2164,6 @@ void recolheTela(void)
     RC3 = 1;
     RC2 = 1;
     RD7 = 1;
-    _delay((unsigned long)((500)*(4000000/4000.0)));
 
     return;
 }
@@ -2186,7 +2197,6 @@ void expandeTela(void)
     RC3 = 1;
     RC2 = 1;
     RD7 = 1;
-    _delay((unsigned long)((500)*(4000000/4000.0)));
 
     return;
 }
