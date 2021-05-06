@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
+<grid distance="0.1" unitdist="mm" unit="mm" style="lines" multiple="1" display="no" altdistance="0.1" altunitdist="mm" altunit="mm"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
 <layer number="2" name="Route2" color="16" fill="1" visible="no" active="no"/>
@@ -2331,12 +2331,40 @@ Copyright: Würth Elektronik</description>
 <text x="-21.3276" y="0.5061" size="0.8128" layer="25" align="bottom-right">&gt;NAME</text>
 <text x="-21.2476" y="-1.1942" size="0.8128" layer="27" align="bottom-right">&gt;VALUE</text>
 </package>
+<package name="62000211121" urn="urn:adsk.eagle:footprint:14805222/1" library_version="2">
+<description>&lt;B&gt;WR-PHD &lt;/B&gt;&lt;BR&gt; 2.00 mm THT Pin Header,2 Pins</description>
+<pad name="1" x="-1" y="0" drill="0.8"/>
+<pad name="2" x="1" y="0" drill="0.8"/>
+<wire x1="-2" y1="-1" x2="2" y2="-1" width="0.1" layer="51"/>
+<wire x1="2" y1="-1" x2="2" y2="1" width="0.1" layer="51"/>
+<wire x1="2" y1="1" x2="-2" y2="1" width="0.1" layer="51"/>
+<wire x1="-2" y1="1" x2="-2" y2="-1" width="0.1" layer="51"/>
+<wire x1="-2.1" y1="1.1" x2="2.1" y2="1.1" width="0.2" layer="21"/>
+<wire x1="2.1" y1="1.1" x2="2.1" y2="-1.1" width="0.2" layer="21"/>
+<wire x1="2.1" y1="-1.1" x2="-2.1" y2="-1.1" width="0.2" layer="21"/>
+<wire x1="-2.1" y1="-1.1" x2="-2.1" y2="1.1" width="0.2" layer="21"/>
+<text x="-2.8364" y="0.0649" size="0.8128" layer="25" align="bottom-right">&gt;NAME</text>
+<text x="-2.8364" y="-1.293" size="0.8128" layer="27" align="bottom-right">&gt;VALUE</text>
+<polygon width="0.1" layer="39">
+<vertex x="-2.3" y="1.3"/>
+<vertex x="2.3" y="1.3"/>
+<vertex x="2.3" y="-1.3"/>
+<vertex x="-2.3" y="-1.3"/>
+</polygon>
+<circle x="-1.8" y="-0.8" radius="0.1" width="0.2" layer="21"/>
+</package>
 </packages>
 <packages3d>
 <package3d name="61301611121" urn="urn:adsk.eagle:package:14805418/2" type="model" library_version="2">
 <description>&lt;B&gt;WR-PHD &lt;/B&gt;&lt;BR&gt; 2.54mm Pin Header, 16 Pins</description>
 <packageinstances>
 <packageinstance name="61301611121"/>
+</packageinstances>
+</package3d>
+<package3d name="62000211121" urn="urn:adsk.eagle:package:14805726/2" type="model" library_version="2">
+<description>&lt;B&gt;WR-PHD &lt;/B&gt;&lt;BR&gt; 2.00 mm THT Pin Header,2 Pins</description>
+<packageinstances>
+<packageinstance name="62000211121"/>
 </packageinstances>
 </package3d>
 </packages3d>
@@ -2397,6 +2425,21 @@ Copyright: Würth Elektronik</description>
 <circle x="15.24" y="-1.27" radius="0.254" width="0.635" layer="94"/>
 <circle x="17.78" y="-1.27" radius="0.254" width="0.635" layer="94"/>
 <circle x="20.32" y="-1.27" radius="0.254" width="0.635" layer="94"/>
+</symbol>
+<symbol name="2PT" urn="urn:adsk.eagle:symbol:14804693/1" library_version="2">
+<description>Pin Header THT</description>
+<pin name="1" x="-2.54" y="-5.08" visible="pad" length="short" direction="pas" rot="R90"/>
+<pin name="2" x="0" y="-5.08" visible="pad" length="short" direction="pas" rot="R90"/>
+<text x="-4.99" y="-1.205" size="1.016" layer="95" align="bottom-right">&gt;NAME</text>
+<text x="-4.95" y="-3.01" size="1.016" layer="96" align="bottom-right">&gt;VALUE</text>
+<wire x1="-3.81" y1="-2.54" x2="1.27" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="1.27" y1="-2.54" x2="1.27" y2="0" width="0.254" layer="94"/>
+<wire x1="1.27" y1="0" x2="-3.81" y2="0" width="0.254" layer="94"/>
+<wire x1="-3.81" y1="0" x2="-3.81" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="-2.54" y1="-1.27" x2="-2.54" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="0" y1="-1.27" x2="0" y2="-2.54" width="0.254" layer="94"/>
+<circle x="-2.54" y="-1.27" radius="0.254" width="0.635" layer="94"/>
+<circle x="0" y="-1.27" radius="0.254" width="0.635" layer="94"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -2484,6 +2527,83 @@ Updated by Yingchun,Shan 2019-10-16
 <attribute name="PACKAGING" value="Bag" constant="no"/>
 <attribute name="PART-NUMBER" value=" 61301611121 " constant="no"/>
 <attribute name="PINS" value=" 16 " constant="no"/>
+<attribute name="ROWS" value="Single" constant="no"/>
+<attribute name="TYPE" value="Straight" constant="no"/>
+</technology>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="6200XX11121_62000211121" urn="urn:adsk.eagle:component:14806233/2" prefix="J" uservalue="yes" library_version="2">
+<description>&lt;b&gt;WR-PHD 2.00 mm THT Pin Header &lt;/b&gt;&lt;BR&gt;
+&lt;BR&gt;
+&lt;b&gt;ARTICLE PROPERTIES:&lt;/b&gt;
+&lt;BR&gt;
+&lt;BR&gt;Pins:2;​ 3;​ 4;​ 6;​ 8;​ 10;​ 20;​ 32
+&lt;BR&gt;
+&lt;BR&gt;&lt;B&gt;KIND PROPERTIES&lt;/B&gt;:
+&lt;BR&gt;
+&lt;BR&gt;Pitch：2 mm
+&lt;BR&gt;Quality Class:3 as per CECC 75 301-802
+&lt;BR&gt;Rows：Single
+&lt;BR&gt;Gender：Pin Header
+&lt;BR&gt;Type：Straight
+&lt;BR&gt;
+&lt;BR&gt;&lt;B&gt;MATERIAL PROPERTIES:&lt;/B&gt;
+&lt;BR&gt;
+&lt;BR&gt;Insulator Material :PA9T
+&lt;BR&gt;Insulator Flammability Rating:UL94 V-0
+&lt;BR&gt;Contact Material:Copper Alloy
+&lt;BR&gt;Contact Plating:Gold
+&lt;BR&gt;Contact Type:Stamped
+&lt;BR&gt;
+&lt;BR&gt;&lt;B&gt;GENERAL INFORMATION&lt;/B&gt;
+&lt;BR&gt;Operating Temperature:-40 up to +105 °C
+&lt;BR&gt;Compliance:Lead free / RoHS
+&lt;BR&gt;
+&lt;BR&gt;&lt;B&gt;ELECTRICAL PROPERTIES:&lt;/B&gt;
+&lt;BR&gt;
+&lt;BR&gt;Rated Current:max.;​ 2 A
+&lt;BR&gt;IR 1:2A
+&lt;BR&gt;Withstanding Voltage:500 V (AC)
+&lt;BR&gt;Contact Resistance:20 mΩ
+&lt;BR&gt;RISO:1000 MΩ
+&lt;BR&gt;
+&lt;BR&gt;&lt;B&gt;CERTIFICATION&lt;/B&gt;
+&lt;BR&gt;UL Approval:E323964
+&lt;BR&gt;&lt;B&gt;PACKAGING PROPERTIES&lt;/B&gt;
+&lt;BR&gt;Packaging:Bag
+&lt;BR&gt;Packaging Unit:1000;​ 500;​ 300;​ 200
+&lt;BR&gt;
+&lt;br&gt;&lt;a href="https://katalog.we-online.com/media/images/v2/o33219v209%20Family_WR-PHD_6200xx11121.jpg" title="Enlarge picture"&gt;
+&lt;img src="https://katalog.we-online.com/media/images/v2/o33219v209%20Family_WR-PHD_6200xx11121.jpg" width="320"&gt;&lt;/a&gt;&lt;p&gt;
+
+Details see: &lt;a href="https://katalog.we-online.com/en/em/PHD_2_00_THT_PIN_HEADER_6200XX11121"&gt;https://katalog.we-online.com/en/em/PHD_2_00_THT_PIN_HEADER_6200XX11121&lt;/a&gt;&lt;p&gt;
+&lt;BR&gt;
+Updated by Yingchun,Shan 2019-10-24
+&lt;BR&gt;
+2019 (C) Würth Elektronik</description>
+<gates>
+<gate name="G$1" symbol="2PT" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="62000211121">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:14805726/2"/>
+</package3dinstances>
+<technologies>
+<technology name="">
+<attribute name="DATASHEET-URL" value="https://katalog.we-online.com/em/datasheet/62000211121.pdf" constant="no"/>
+<attribute name="GENDER" value="Pin Header" constant="no"/>
+<attribute name="IR" value="2A" constant="no"/>
+<attribute name="MATES" value="WR-PHD 2.0mm Socket Header" constant="no"/>
+<attribute name="PACKAGING" value="Bag" constant="no"/>
+<attribute name="PART-NUMBER" value=" 62000211121 " constant="no"/>
+<attribute name="PINS" value=" 2 " constant="no"/>
 <attribute name="ROWS" value="Single" constant="no"/>
 <attribute name="TYPE" value="Straight" constant="no"/>
 </technology>
@@ -4727,6 +4847,8 @@ Source: www.kingbright.com</description>
 <part name="J2" library="Wurth_Connectors_WR-PHD" library_urn="urn:adsk.eagle:library:14804658" deviceset="6130XX11121_61301611121" device="" package3d_urn="urn:adsk.eagle:package:14805418/2"/>
 <part name="U$5" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="FIDUCIAL" device="" package3d_urn="urn:adsk.eagle:package:6240632/1"/>
 <part name="U$6" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="FIDUCIAL" device="" package3d_urn="urn:adsk.eagle:package:6240632/1"/>
+<part name="J3" library="Wurth_Connectors_WR-PHD" library_urn="urn:adsk.eagle:library:14804658" deviceset="6200XX11121_62000211121" device="" package3d_urn="urn:adsk.eagle:package:14805726/2"/>
+<part name="R2" library="Resistor_Capacitor" library_urn="urn:adsk.eagle:library:15122775" deviceset="CRCW08050000Z0EA" device="" package3d_urn="urn:adsk.eagle:package:10872899/3" value="330"/>
 </parts>
 <sheets>
 <sheet>
@@ -4911,6 +5033,14 @@ Source: www.kingbright.com</description>
 </instance>
 <instance part="U$5" gate="G$1" x="-55.88" y="-43.18" smashed="yes"/>
 <instance part="U$6" gate="G$1" x="-63.5" y="-43.18" smashed="yes"/>
+<instance part="J3" gate="G$1" x="142.24" y="108.712" smashed="yes" rot="R270">
+<attribute name="NAME" x="141.035" y="113.702" size="1.016" layer="95" rot="R270" align="bottom-right"/>
+<attribute name="VALUE" x="139.23" y="113.662" size="1.016" layer="96" rot="R270" align="bottom-right"/>
+</instance>
+<instance part="R2" gate="G$1" x="149.52" y="116.44" smashed="yes">
+<attribute name="NAME" x="145.71" y="117.9386" size="1.778" layer="95"/>
+<attribute name="VALUE" x="145.71" y="113.138" size="1.778" layer="96"/>
+</instance>
 </instances>
 <busses>
 </busses>
@@ -5064,8 +5194,9 @@ Source: www.kingbright.com</description>
 <pinref part="C10" gate="G$1" pin="2"/>
 <wire x1="199.3" y1="99.2" x2="172.2" y2="99.2" width="0.1524" layer="91"/>
 <wire x1="180.32" y1="129.1" x2="172.2" y2="129.1" width="0.1524" layer="91"/>
-<wire x1="172.2" y1="129.1" x2="172.2" y2="104.4" width="0.1524" layer="91"/>
+<wire x1="172.2" y1="129.1" x2="172.2" y2="116.44" width="0.1524" layer="91"/>
 <junction x="172.2" y="99.2"/>
+<wire x1="172.2" y1="116.44" x2="172.2" y2="104.4" width="0.1524" layer="91"/>
 <wire x1="172.2" y1="104.4" x2="172.2" y2="99.2" width="0.1524" layer="91"/>
 <pinref part="LED8" gate="G$1" pin="C"/>
 <wire x1="175.62" y1="137.1" x2="172.2" y2="137.1" width="0.1524" layer="91"/>
@@ -5265,6 +5396,8 @@ Source: www.kingbright.com</description>
 <pinref part="J2" gate="G$1" pin="8"/>
 <wire x1="137" y1="155.42" x2="137" y2="138" width="0.1524" layer="91"/>
 <junction x="137" y="138"/>
+<pinref part="R2" gate="G$1" pin="2"/>
+<wire x1="154.6" y1="116.44" x2="172.2" y2="116.44" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$5" class="0">
@@ -5898,7 +6031,8 @@ Source: www.kingbright.com</description>
 <junction x="55.3" y="187.2"/>
 <wire x1="154.9" y1="148.2" x2="154.7" y2="148.2" width="0.1524" layer="91"/>
 <pinref part="C18" gate="G$1" pin="1"/>
-<wire x1="154.7" y1="148.2" x2="124.3" y2="148.2" width="0.1524" layer="91"/>
+<wire x1="154.7" y1="148.2" x2="154.6" y2="148.2" width="0.1524" layer="91"/>
+<wire x1="154.6" y1="148.2" x2="124.3" y2="148.2" width="0.1524" layer="91"/>
 <wire x1="154.7" y1="147.14" x2="154.7" y2="148.2" width="0.1524" layer="91"/>
 <junction x="154.7" y="148.2"/>
 <wire x1="154.78" y1="149.82" x2="154.78" y2="149.9" width="0.1524" layer="91"/>
@@ -5939,6 +6073,11 @@ Source: www.kingbright.com</description>
 <pinref part="J2" gate="G$1" pin="15"/>
 <wire x1="154.78" y1="149.82" x2="154.78" y2="155.42" width="0.1524" layer="91"/>
 <junction x="154.78" y="149.82"/>
+<pinref part="J3" gate="G$1" pin="2"/>
+<wire x1="137.16" y1="108.712" x2="137.16" y2="106.2" width="0.1524" layer="91"/>
+<wire x1="137.16" y1="106.2" x2="162.9" y2="106.2" width="0.1524" layer="91"/>
+<wire x1="162.9" y1="106.2" x2="162.9" y2="148.2" width="0.1524" layer="91"/>
+<wire x1="162.9" y1="148.2" x2="154.7" y2="148.2" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$2" class="0">
@@ -5968,6 +6107,18 @@ Source: www.kingbright.com</description>
 <junction x="95.9" y="278.68"/>
 <pinref part="IC1" gate="G$1" pin="RA4/T0CKI/C1OUT"/>
 <wire x1="58" y1="116.3" x2="50.9" y2="116.3" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$10" class="0">
+<segment>
+<pinref part="IC1" gate="G$1" pin="RB0/INT"/>
+<pinref part="J3" gate="G$1" pin="1"/>
+<wire x1="113.88" y1="111.22" x2="137.16" y2="111.22" width="0.1524" layer="91"/>
+<wire x1="137.16" y1="111.22" x2="137.16" y2="111.252" width="0.1524" layer="91"/>
+<pinref part="R2" gate="G$1" pin="1"/>
+<wire x1="144.44" y1="116.44" x2="137.16" y2="116.44" width="0.1524" layer="91"/>
+<wire x1="137.16" y1="116.44" x2="137.16" y2="111.252" width="0.1524" layer="91"/>
+<junction x="137.16" y="111.252"/>
 </segment>
 </net>
 </nets>

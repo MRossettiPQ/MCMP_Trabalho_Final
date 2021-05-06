@@ -5,7 +5,7 @@
 #define _XTAL_FREQ 4000000                              //***Defini a frequencia do clock, 4Mhz neste caso
 
 //****** congiguration bits  **************************************************
-#pragma config WDTE = OFF                               //Desabilita o uso do WDT
+#pragma config WDTE = ON                                //Habilita o uso do WDT
 #pragma config FOSC = HS                                //Define uso do clock externo EM 4 OU 20mHZ
 //se usar o XT no m?ximo 4Mhz
 #pragma config PWRTE = ON                               //Habilita o reset ao ligar
@@ -19,49 +19,27 @@
 #define D6 RB6
 #define D7 RB7
 
-#include "lcd.h"                                        //**** Inclui a biblioteca do LCD escolhido
-
+#include "lcd.h"
 //%%%%%%%%%%%%%%%%%%%%%% DEFINE VARIAVEIS PARA RECEBER ANALOGICO %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
 float valor_entry0, valor_entry1, valor_entry2, valor_entry3, valor_entry4, valor_entry5, valor_entry6 = 0;
 //%%%%%%%%%%%%%%%%%%%%%% DEFINE BUFFER LCD %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
-char buffer0[20],buffer1[20],buffer2[20],buffer3[20],buffer4[20],buffer5[20],buffer6[20];     //vari?vel para o fun??o sprintf
+char buffer0[30] = "INICIA",buffer1[30] = "INICIA";     //vari?vel para o fun??o sprintf
    
 void recolheTela(void);
 void expandeTela(void);
 void lerSensores(void);
 void atualizaLCD(void);
+void estufaUm(void);
+void estufaDois(void);
+void estufaTres(void);
+void estufaQuatro(void);
+void __interrupt() TrataINT(void);
+void iniciaPinos(void);
 
 int main()
 {
-    //************* CONFIGURAÇÃO PINOS PIC *************************************
-    TRISB = 0b00000000;       //configura pinos de entrada(1)e sa?da (0)
-    TRISA = 0b11111111;       //configura pinos de entrada(1)e sa?da (0)
-    TRISC = 0b00000000;
-    TRISD = 0b00000000;
-    //*********** CONFIGURA O CONVERSOR ANALOGICO/DIGITAL **********************
-    //Ficar somente com AN0 como entrada anal?gica. Tem tabela no datasheet
-    ADCON1bits.PCFG0   = 0;                             //configura as entradas anal?gicas
-    ADCON1bits.PCFG1   = 0;                             //configura as entradas anal?gicas
-    ADCON1bits.PCFG2   = 0;                             //configura as entradas anal?gicas
-    ADCON1bits.PCFG3   = 0;                             //configura as entradas anal?gicas
-
-    //Define o clock de conversor
-    ADCON0bits.ADCS0 = 0  ;                             //confirmando default Fosc/2
-    ADCON0bits.ADCS1 = 0  ;                             //confirmando default Fosc/2
-
-    ADCON1bits.ADFM = 0   ;                             //Default ? 0. Pra mostra que pegar? os dados em 8 bits 
-                                                        //no ADRESH, pois est? justifica ? esquerda
-                                                        //Passando pra 1 pode pegar os dados em 10 bits 
-                                                        //usando os dois registradores ADRESHL justificado ?
-                                                        //direita
-
-    //Inicializa registradores do AD
-    ADRESL = 0x00;                                      //inicializar valor analogico com 0
-    ADRESH = 0x00;          
-
-    ADCON0bits.ADON = 1;                                //Liga AD
-  
-    Lcd_Init();                                         //Necessario para o LCD iniciar
+    iniciaPinos();
+    Lcd_Init(); 
     while(1)
     {
         lerSensores();
@@ -82,7 +60,6 @@ int main()
             expandeTela();
         }
        //&&&&&&&&&&&&&&&&&&Final Sensor Luz
-     
         //FUNÇÃO DE REGAR PLANTAS
         if(valor_entry1 < 64)
         {
@@ -90,9 +67,7 @@ int main()
             //Cuida estufa 1
             if(valor_entry3 < 128)
             {
-                RC6 = 1;
-                __delay_ms(500);
-                RC6 = 0;
+                estufaUm();
             }            
         }
         if (valor_entry1 < 128)
@@ -101,9 +76,7 @@ int main()
             //Cuida estufa 2
             if(valor_entry4 < 128)
             {
-                RC7 = 1;
-                __delay_ms(500);
-                RC7 = 0;
+                estufaDois();
             }              
         }
         if (valor_entry1 < 192)
@@ -112,9 +85,7 @@ int main()
            //Cuida estufa 3
            if(valor_entry5 < 128)
            {
-               RC4 = 1;
-               __delay_ms(500);
-               RC4 = 0;
+               estufaTres();
            }              
         }
         if (valor_entry1 < 256)
@@ -123,17 +94,67 @@ int main()
             //Cuida estufa 4
             if(valor_entry6 < 128)
             {
-                RC5 = 1;
-                __delay_ms(500);
-                RC5 = 0;
+                estufaQuatro();
             }        
         }
         //&&&&&&&&&&&&&&&& FIM FUNÇÃO DE REGAR &&&&&&&&&&&&&&&&&&&& 
-       
         //%%%%%%%%%%%%%%%%%%%%%% Final %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        atualizaLCD();
+        __delay_ms(250);
     }
     return 0;
+}
+void __interrupt() TrataINT(void)
+{ 
+    if(INTF == 1)
+    {
+        PORTBbits.RB3 = 1; //DEBUG
+        recolheTela();
+        __delay_ms(600);
+        expandeTela();
+        INTF = 0;
+        PORTBbits.RB3 = 0; //DEBUG
+    }
+    else if (TMR1IF == 1)
+    { 
+        TMR1IF = 0;
+        TMR1L = 0xDC;
+        TMR1H = 0x0B;
+        
+        CLRWDT (); 
+        
+        PORTBbits.RB3 = 1;
+        atualizaLCD();
+        PORTBbits.RB3 = 0;
+    }
+    return;
+}
+void estufaUm(void)
+{
+    RC6 = 1;
+    __delay_ms(500);
+    RC6 = 0;
+    return;
+}
+void estufaDois(void)
+{
+    RC7 = 1;
+    __delay_ms(500);
+    RC7 = 0;
+    return;
+}
+void estufaTres(void)
+{
+    RC4 = 1;
+    __delay_ms(500);
+    RC4 = 0;
+    return;
+}
+void estufaQuatro(void)
+{
+    RC5 = 1;
+    __delay_ms(500);
+    RC5 = 0;
+    return;
 }
 void lerSensores(void)
 {
@@ -206,7 +227,7 @@ void lerSensores(void)
     ADCON0bits.GO = 1;                                  //converte
     __delay_us(20);                                     //tempo de convers?o
     valor_entry6 = ADRESH;                              // passa valores convertido do reg para a vari?vel
-    
+
     return;   
 }
 void recolheTela(void)
@@ -278,54 +299,104 @@ void expandeTela(void)
 void atualizaLCD(void)
 {
     Lcd_Clear();                                        //Limpa LCD
-    Lcd_Set_Cursor(1,1);                                //P?e curso linha 1 coluna 1
-    Lcd_Write_String("C:");                             //escreve string
-    sprintf(buffer0, "%.2f", valor_entry0);             //Armazena em buffer o conte?do da vari?vel f formatado com duas casas
-    Lcd_Set_Cursor(1,3);                  
-    Lcd_Write_String(buffer0);                          //Escreve o conte?do de buffer no LCD
+    Lcd_Set_Cursor(1,1); 
+    sprintf(buffer0, "C:%i A:%i L:%i S1:%i", (int)valor_entry0, (int)valor_entry1, (int)valor_entry2, (int)valor_entry3); 
     __delay_ms(20);
+    sprintf(buffer1, "S2:%i S3:%i S4:%i ", (int)valor_entry4, (int)valor_entry5, (int)valor_entry6);
+    __delay_ms(20);
+    Lcd_Write_String(buffer0); 
+    Lcd_Set_Cursor(2,1);
+    Lcd_Write_String(buffer1); 
+    __delay_ms(50);
+    return;
+}
+void iniciaPinos(void)
+{
+    OPTION_REGbits.nRBPU = 1;
+    //************* CONFIGURAÇÃO PINOS PIC *************************************
+    TRISBbits.TRISB0 = 1;                               //Habilita R0 como entrada
+    TRISBbits.TRISB1 = 0;
+    TRISBbits.TRISB2 = 0;
+    TRISBbits.TRISB3 = 0;
+    TRISBbits.TRISB4 = 0;
+    TRISBbits.TRISB5 = 0;
+    TRISBbits.TRISB6 = 0;
+    TRISBbits.TRISB7 = 0;
     
-    Lcd_Set_Cursor(1,10);                               //P?e curso linha 1 coluna 1
-    Lcd_Write_String("A:");                             //escreve string
-    sprintf(buffer1, "%.2f", valor_entry1);             //Armazena em buffer o conte?do da vari?vel f formatado com duas casas
-    Lcd_Set_Cursor(1,12);                  
-    Lcd_Write_String(buffer1);
-    __delay_ms(20);
+    OPTION_REGbits.INTEDG = 1;                          //
+    INTCONbits.GIE = 1;                                 //Habilita interrupção global
+    INTCONbits.INTE = 1;                                //
+    INTCONbits.INTF = 0;                                //
+    INTCONbits.PEIE = 1;
     
-    Lcd_Set_Cursor(1,19);                               //P?e curso linha 1 coluna 1
-    Lcd_Write_String("L:");                             //escreve string
-    sprintf(buffer2, "%.2f", valor_entry2);             //Armazena em buffer o conte?do da vari?vel f formatado com duas casas
-    Lcd_Set_Cursor(1,21);                  
-    Lcd_Write_String(buffer2);
-    __delay_ms(20);
+    OPTION_REGbits.PS0 = 1;                               //
+    OPTION_REGbits.PS1 = 1;                              //
+    OPTION_REGbits.PS2 = 1;                              //
+    OPTION_REGbits.PSA = 1;                              //
     
-    Lcd_Set_Cursor(1,28);                               //P?e curso linha 1 coluna 1
-    Lcd_Write_String("S1:");                            //escreve string
-    sprintf(buffer3, "%.2f", valor_entry3);             //Armazena em buffer o conte?do da vari?vel f formatado com duas casas
-    Lcd_Set_Cursor(1,31);                  
-    Lcd_Write_String(buffer3);
-    __delay_ms(20);
+    T1CONbits.TMR1CS = 0;                               //
+    T1CONbits.T1CKPS0 = 1;                              //
+    T1CONbits.T1CKPS1 = 1;                              //
     
-    Lcd_Set_Cursor(2,1);                                //P?e curso linha 1 coluna 1
-    Lcd_Write_String("S2:");                            //escreve string
-    sprintf(buffer4, "%.2f", valor_entry4);             //Armazena em buffer o conte?do da vari?vel f formatado com duas casas
-    Lcd_Set_Cursor(2,4);                  
-    Lcd_Write_String(buffer4);
-    __delay_ms(20);
+    TMR1L = 0xDC;
+    TMR1H = 0x0B;
     
-    Lcd_Set_Cursor(2,11);                               //P?e curso linha 1 coluna 1
-    Lcd_Write_String("S3:");                            //escreve string
-    sprintf(buffer5, "%.2f", valor_entry5);             //Armazena em buffer o conte?do da vari?vel f formatado com duas casas
-    Lcd_Set_Cursor(2,14);                  
-    Lcd_Write_String(buffer5);
-    __delay_ms(20);
-        
-    Lcd_Set_Cursor(2,21);                               //P?e curso linha 1 coluna 1
-    Lcd_Write_String("S4:");                            //escreve string
-    sprintf(buffer6, "%.2f", valor_entry6);             //Armazena em buffer o conte?do da vari?vel f formatado com duas casas
-    Lcd_Set_Cursor(2,24);                  
-    Lcd_Write_String(buffer6);
-    __delay_ms(100); 
+    PIE1bits.TMR1IE=1; 
+    
+    T1CONbits.TMR1ON = 1;
+    
+    TRISA = 0b11111111;                                 //configura pinos de entrada(1)e sa?da (0)
+    TRISC = 0b00000000;
+    TRISD = 0b00000000;
+    //*********** CONFIGURA O CONVERSOR ANALOGICO/DIGITAL **********************
+    //Ficar somente com AN0 como entrada anal?gica. Tem tabela no datasheet
+    ADCON1bits.PCFG0   = 0;                             //configura as entradas anal?gicas
+    ADCON1bits.PCFG1   = 0;                             //configura as entradas anal?gicas
+    ADCON1bits.PCFG2   = 0;                             //configura as entradas anal?gicas
+    ADCON1bits.PCFG3   = 0;                             //configura as entradas anal?gicas
+
+    //Define o clock de conversor
+    ADCON0bits.ADCS0 = 0  ;                             //confirmando default Fosc/2
+    ADCON0bits.ADCS1 = 0  ;                             //confirmando default Fosc/2
+
+    ADCON1bits.ADFM = 0   ;                             //Default ? 0. Pra mostra que pegar? os dados em 8 bits 
+                                                        //no ADRESH, pois est? justifica ? esquerda
+                                                        //Passando pra 1 pode pegar os dados em 10 bits 
+                                                        //usando os dois registradores ADRESHL justificado ?
+                                                        //direita
+
+    //Inicializa registradores do AD
+    ADRESL = 0x00;                                      //inicializar valor analogico com 0
+    ADRESH = 0x00;          
+
+    ADCON0bits.ADON = 1;                                //Liga 
+    
+    PORTBbits.RB0 = 0;
+    PORTBbits.RB1 = 0;
+    PORTBbits.RB2 = 0;
+    PORTBbits.RB3 = 0;
+    PORTBbits.RB4 = 0;
+    PORTBbits.RB5 = 0;
+    PORTBbits.RB6 = 0;
+    PORTBbits.RB7 = 0;
+    
+    PORTCbits.RC0 = 0;
+    PORTCbits.RC1 = 0;
+    PORTCbits.RC2 = 0;
+    PORTCbits.RC3 = 0;
+    PORTCbits.RC4 = 0;
+    PORTCbits.RC5 = 0;
+    PORTCbits.RC6 = 0;
+    PORTCbits.RC7 = 0;
+    
+    PORTDbits.RD0 = 0;
+    PORTDbits.RD1 = 0;
+    PORTDbits.RD2 = 0;
+    PORTDbits.RD3 = 0;
+    PORTDbits.RD4 = 0;
+    PORTDbits.RD5 = 0;
+    PORTDbits.RD6 = 0;
+    PORTDbits.RD7 = 0;
     
     return;
 }

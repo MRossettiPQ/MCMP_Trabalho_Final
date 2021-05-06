@@ -916,7 +916,7 @@ typedef struct
   unsigned TRISB7               : 1;
   } __TRISBbits_t;
 
-extern __at(0x0086) volatile __TRISBbits_t TRISBbits;
+//extern __at(0x0086) volatile __TRISBbits_t TRISBbits;
 
 #define _TRISB0                 0x01
 #define _TRISB1                 0x02
