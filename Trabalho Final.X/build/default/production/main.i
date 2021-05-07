@@ -2157,23 +2157,27 @@ void lerSensores(void)
 }
 void recolheTela(void)
 {
+    while(RE2 == 0)
+    {
 
-    RD5 = 1;
-    RD3 = 1;
-    RD1 = 1;
-    RC0 = 1;
+        RD5 = 1;
+        RD3 = 1;
+        RD1 = 1;
+        RC0 = 1;
 
 
-    RD4 = 0;
-    RC1 = 1;
-    RD2 = 0;
-    RD6 = 1;
+        RD4 = 0;
+        RC1 = 1;
+        RD2 = 0;
+        RD6 = 1;
 
-    RD0 = 0;
-    RC3 = 1;
-    RC2 = 0;
-    RD7 = 1;
-    _delay((unsigned long)((500)*(4000000/4000.0)));
+        RD0 = 0;
+        RC3 = 1;
+        RC2 = 0;
+        RD7 = 1;
+
+        _delay((unsigned long)((20)*(4000000/4000.0)));
+    }
 
 
     RD4 = 1;
@@ -2185,28 +2189,38 @@ void recolheTela(void)
     RC3 = 1;
     RC2 = 1;
     RD7 = 1;
+
+
+    RD5 = 0;
+    RD3 = 0;
+    RD1 = 0;
+    RC0 = 0;
 
     return;
 }
 void expandeTela(void)
 {
+    while(RA4 == 0 && RB0 == 0)
+    {
 
-    RD5 = 1;
-    RD3 = 1;
-    RD1 = 1;
-    RC0 = 1;
+        RD5 = 1;
+        RD3 = 1;
+        RD1 = 1;
+        RC0 = 1;
 
 
-    RD4 = 0;
-    RC1 = 1;
-    RD2 = 0;
-    RD6 = 1;
+        RD4 = 1;
+        RC1 = 0;
+        RD2 = 1;
+        RD6 = 0;
 
-    RD0 = 0;
-    RC3 = 1;
-    RC2 = 0;
-    RD7 = 1;
-    _delay((unsigned long)((500)*(4000000/4000.0)));
+        RD0 = 1;
+        RC3 = 0;
+        RC2 = 1;
+        RD7 = 0;
+        _delay((unsigned long)((20)*(4000000/4000.0)));
+    }
+
 
 
     RD4 = 1;
@@ -2219,6 +2233,10 @@ void expandeTela(void)
     RC2 = 1;
     RD7 = 1;
 
+    RD5 = 0;
+    RD3 = 0;
+    RD1 = 0;
+    RC0 = 0;
     return;
 }
 void atualizaLCD(void)
