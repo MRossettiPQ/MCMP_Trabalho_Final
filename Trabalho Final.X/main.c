@@ -24,7 +24,7 @@
 float valor_entry0, valor_entry1, valor_entry2, valor_entry3, valor_entry4, valor_entry5, valor_entry6 = 0;
 //%%%%%%%%%%%%%%%%%%%%%% DEFINE BUFFER LCD %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
 char buffer0[30] = "INICIA",buffer1[30] = "INICIA";     //vari?vel para o fun??o sprintf
-   
+
 void recolheTela(void);
 void expandeTela(void);
 void lerSensores(void);
@@ -232,24 +232,28 @@ void lerSensores(void)
 }
 void recolheTela(void)
 {
-    //Enable Motor
-    RD5 = 1;
-    RD3 = 1;
-    RD1 = 1;
-    RC0 = 1;
+    while(RE2 == 0)
+    {
+        //Enable Motor
+        RD5 = 1;
+        RD3 = 1;
+        RD1 = 1;
+        RC0 = 1;
+        
+        //movimenta
+        RD4 = 0;
+        RC1 = 1;
+        RD2 = 0;
+        RD6 = 1;
 
-    //movimenta
-    RD4 = 0;
-    RC1 = 1;
-    RD2 = 0;
-    RD6 = 1;
-
-    RD0 = 0;
-    RC3 = 1;
-    RC2 = 0;
-    RD7 = 1;
-    __delay_ms(500);
-
+        RD0 = 0;
+        RC3 = 1;
+        RC2 = 0;
+        RD7 = 1;
+        
+        __delay_ms(20);
+    }
+        
     //para motor
     RD4 = 1;
     RC1 = 1;
@@ -260,28 +264,38 @@ void recolheTela(void)
     RC3 = 1;
     RC2 = 1;
     RD7 = 1;
+    
+    //Desliga Ponte H
+    RD5 = 0;
+    RD3 = 0;
+    RD1 = 0;
+    RC0 = 0;
     
     return;
 }
 void expandeTela(void)
 {
-    //Enable Motor
-    RD5 = 1;
-    RD3 = 1;
-    RD1 = 1;
-    RC0 = 1;
-           
-    //movimenta
-    RD4 = 0;
-    RC1 = 1;
-    RD2 = 0;
-    RD6 = 1;
-           
-    RD0 = 0;
-    RC3 = 1;
-    RC2 = 0;
-    RD7 = 1;
-    __delay_ms(500);
+    while(RA4 == 0 && RB0 == 0)
+    {
+        //Enable Motor
+        RD5 = 1;
+        RD3 = 1;
+        RD1 = 1;
+        RC0 = 1;
+        
+        //movimenta
+        RD4 = 1;
+        RC1 = 0;
+        RD2 = 1;
+        RD6 = 0;
+
+        RD0 = 1;
+        RC3 = 0;
+        RC2 = 1;
+        RD7 = 0;
+        __delay_ms(20);
+    }
+
            
     //para motor
     RD4 = 1;
@@ -294,6 +308,10 @@ void expandeTela(void)
     RC2 = 1;
     RD7 = 1;
     
+    RD5 = 0;
+    RD3 = 0;
+    RD1 = 0;
+    RC0 = 0;
     return;
 }
 void atualizaLCD(void)
