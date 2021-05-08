@@ -1946,18 +1946,22 @@ void Lcd_Shift_Left()
 # 22 "main.c" 2
 
 
-float valor_entry0, valor_entry1, valor_entry2, valor_entry3, valor_entry4, valor_entry5, valor_entry6 = 0;
 
-char buffer0[30] = "INICIA",buffer1[30] = "INICIA";
+float valor_entry0 = 0, valor_entry1 = 0, valor_entry2 = 0, valor_entry3 = 257, valor_entry4 = 257, valor_entry5 = 257, valor_entry6 = 257;
+
 
 void recolheTela(void);
 void expandeTela(void);
+
 void lerSensores(void);
 void atualizaLCD(void);
-void estufaUm(void);
-void estufaDois(void);
-void estufaTres(void);
-void estufaQuatro(void);
+
+void controleEstufas(void);
+    void estufaUm(void);
+    void estufaDois(void);
+    void estufaTres(void);
+    void estufaQuatro(void);
+
 void __attribute__((picinterrupt(("")))) TrataINT(void);
 void iniciaPinos(void);
 
@@ -1969,62 +1973,19 @@ int main()
     {
         lerSensores();
 
-
-        if(valor_entry0 > 192 )
-        {
-            expandeTela();
-        }
-
-
-        if(valor_entry2 < 127)
+        if(valor_entry0 > 192 && RA4 == 0)
         {
             recolheTela();
         }
-        else
+
+        if(valor_entry2 > 125 && RB3 == 0)
         {
             expandeTela();
         }
 
+        controleEstufas();
 
-        if(valor_entry1 < 64)
-        {
-
-
-            if(valor_entry3 < 128)
-            {
-                estufaUm();
-            }
-        }
-        if (valor_entry1 < 128)
-        {
-
-
-            if(valor_entry4 < 128)
-            {
-                estufaDois();
-            }
-        }
-        if (valor_entry1 < 192)
-        {
-
-
-           if(valor_entry5 < 128)
-           {
-               estufaTres();
-           }
-        }
-        if (valor_entry1 < 256)
-        {
-
-
-            if(valor_entry6 < 128)
-            {
-                estufaQuatro();
-            }
-        }
-
-
-        _delay((unsigned long)((250)*(4000000/4000.0)));
+        _delay((unsigned long)((500)*(4000000/4000.0)));
     }
     return 0;
 }
@@ -2032,53 +1993,18 @@ void __attribute__((picinterrupt(("")))) TrataINT(void)
 {
     if(INTF == 1)
     {
-        PORTBbits.RB3 = 1;
+        __asm("clrwdt");
         recolheTela();
-        _delay((unsigned long)((600)*(4000000/4000.0)));
-        expandeTela();
-        INTF = 0;
-        PORTBbits.RB3 = 0;
     }
     else if (TMR1IF == 1)
     {
+        __asm("clrwdt");
+        atualizaLCD();
         TMR1IF = 0;
         TMR1L = 0xDC;
         TMR1H = 0x0B;
-
-        __asm("clrwdt");
-
-        PORTBbits.RB3 = 1;
-        atualizaLCD();
-        PORTBbits.RB3 = 0;
     }
-    return;
-}
-void estufaUm(void)
-{
-    RC6 = 1;
-    _delay((unsigned long)((500)*(4000000/4000.0)));
-    RC6 = 0;
-    return;
-}
-void estufaDois(void)
-{
-    RC7 = 1;
-    _delay((unsigned long)((500)*(4000000/4000.0)));
-    RC7 = 0;
-    return;
-}
-void estufaTres(void)
-{
-    RC4 = 1;
-    _delay((unsigned long)((500)*(4000000/4000.0)));
-    RC4 = 0;
-    return;
-}
-void estufaQuatro(void)
-{
-    RC5 = 1;
-    _delay((unsigned long)((500)*(4000000/4000.0)));
-    RC5 = 0;
+    INTF = 0;
     return;
 }
 void lerSensores(void)
@@ -2090,7 +2016,7 @@ void lerSensores(void)
     ADCON0bits.CHS2 = 0;
 
     ADCON0bits.GO = 1;
-    _delay((unsigned long)((20)*(4000000/4000000.0)));
+    _delay((unsigned long)((5)*(4000000/4000000.0)));
     valor_entry0 = ADRESH;
 
 
@@ -2100,7 +2026,7 @@ void lerSensores(void)
     ADCON0bits.CHS2 = 0;
 
     ADCON0bits.GO = 1;
-    _delay((unsigned long)((20)*(4000000/4000000.0)));
+    _delay((unsigned long)((5)*(4000000/4000000.0)));
     valor_entry1 = ADRESH;
 
 
@@ -2110,9 +2036,8 @@ void lerSensores(void)
     ADCON0bits.CHS2 = 0;
 
     ADCON0bits.GO = 1;
-    _delay((unsigned long)((20)*(4000000/4000000.0)));
+    _delay((unsigned long)((5)*(4000000/4000000.0)));
     valor_entry2 = ADRESH;
-
 
 
     ADCON0bits.CHS0 = 1;
@@ -2120,9 +2045,8 @@ void lerSensores(void)
     ADCON0bits.CHS2 = 0;
 
     ADCON0bits.GO = 1;
-    _delay((unsigned long)((20)*(4000000/4000000.0)));
+    _delay((unsigned long)((5)*(4000000/4000000.0)));
     valor_entry3 = ADRESH;
-
 
 
     ADCON0bits.CHS0 = 0;
@@ -2130,7 +2054,7 @@ void lerSensores(void)
     ADCON0bits.CHS2 = 1;
 
     ADCON0bits.GO = 1;
-    _delay((unsigned long)((20)*(4000000/4000000.0)));
+    _delay((unsigned long)((5)*(4000000/4000000.0)));
     valor_entry4 = ADRESH;
 
 
@@ -2140,8 +2064,9 @@ void lerSensores(void)
     ADCON0bits.CHS2 = 1;
 
     ADCON0bits.GO = 1;
-    _delay((unsigned long)((20)*(4000000/4000000.0)));
+    _delay((unsigned long)((5)*(4000000/4000000.0)));
     valor_entry5 = ADRESH;
+
 
 
 
@@ -2150,21 +2075,14 @@ void lerSensores(void)
     ADCON0bits.CHS2 = 1;
 
     ADCON0bits.GO = 1;
-    _delay((unsigned long)((20)*(4000000/4000000.0)));
+    _delay((unsigned long)((5)*(4000000/4000000.0)));
     valor_entry6 = ADRESH;
-
     return;
 }
 void recolheTela(void)
 {
-    while(RE2 == 0)
+    if(RA4 == 0)
     {
-
-        RD5 = 1;
-        RD3 = 1;
-        RD1 = 1;
-        RC0 = 1;
-
 
         RD4 = 0;
         RC1 = 1;
@@ -2175,39 +2093,26 @@ void recolheTela(void)
         RC3 = 1;
         RC2 = 0;
         RD7 = 1;
-
-        _delay((unsigned long)((20)*(4000000/4000.0)));
     }
+    else
+    {
 
+        RD4 = 1;
+        RC1 = 1;
+        RD2 = 1;
+        RD6 = 1;
 
-    RD4 = 1;
-    RC1 = 1;
-    RD2 = 1;
-    RD6 = 1;
-
-    RD0 = 1;
-    RC3 = 1;
-    RC2 = 1;
-    RD7 = 1;
-
-
-    RD5 = 0;
-    RD3 = 0;
-    RD1 = 0;
-    RC0 = 0;
-
+        RD0 = 1;
+        RC3 = 1;
+        RC2 = 1;
+        RD7 = 1;
+    }
     return;
 }
 void expandeTela(void)
 {
-    while(RA4 == 0 && RB0 == 0)
+    if(RB3 == 0)
     {
-
-        RD5 = 1;
-        RD3 = 1;
-        RD1 = 1;
-        RC0 = 1;
-
 
         RD4 = 1;
         RC1 = 0;
@@ -2218,39 +2123,36 @@ void expandeTela(void)
         RC3 = 0;
         RC2 = 1;
         RD7 = 0;
-        _delay((unsigned long)((20)*(4000000/4000.0)));
     }
+    else
+    {
 
+        RD4 = 1;
+        RC1 = 1;
+        RD2 = 1;
+        RD6 = 1;
 
-
-    RD4 = 1;
-    RC1 = 1;
-    RD2 = 1;
-    RD6 = 1;
-
-    RD0 = 1;
-    RC3 = 1;
-    RC2 = 1;
-    RD7 = 1;
-
-    RD5 = 0;
-    RD3 = 0;
-    RD1 = 0;
-    RC0 = 0;
+        RD0 = 1;
+        RC3 = 1;
+        RC2 = 1;
+        RD7 = 1;
+    }
     return;
 }
 void atualizaLCD(void)
 {
+
+    char buffer0[16],buffer1[16];
+
     Lcd_Clear();
     Lcd_Set_Cursor(1,1);
-    sprintf(buffer0, "C:%i A:%i L:%i S1:%i", (int)valor_entry0, (int)valor_entry1, (int)valor_entry2, (int)valor_entry3);
-    _delay((unsigned long)((20)*(4000000/4000.0)));
-    sprintf(buffer1, "S2:%i S3:%i S4:%i ", (int)valor_entry4, (int)valor_entry5, (int)valor_entry6);
-    _delay((unsigned long)((20)*(4000000/4000.0)));
+    sprintf(buffer0, "Q:%i C:%i L:%i S1:%i",(int)valor_entry1, (int)valor_entry0, (int)valor_entry2, (int)valor_entry3);
     Lcd_Write_String(buffer0);
+    _delay((unsigned long)((10)*(4000000/4000.0)));
     Lcd_Set_Cursor(2,1);
+    sprintf(buffer1, "S2:%i S3:%i S4:%i ", (int)valor_entry4, (int)valor_entry5, (int)valor_entry6);
     Lcd_Write_String(buffer1);
-    _delay((unsigned long)((50)*(4000000/4000.0)));
+    _delay((unsigned long)((10)*(4000000/4000.0)));
     return;
 }
 void iniciaPinos(void)
@@ -2260,7 +2162,7 @@ void iniciaPinos(void)
     TRISBbits.TRISB0 = 1;
     TRISBbits.TRISB1 = 0;
     TRISBbits.TRISB2 = 0;
-    TRISBbits.TRISB3 = 0;
+    TRISBbits.TRISB3 = 1;
     TRISBbits.TRISB4 = 0;
     TRISBbits.TRISB5 = 0;
     TRISBbits.TRISB6 = 0;
@@ -2279,7 +2181,7 @@ void iniciaPinos(void)
 
     T1CONbits.TMR1CS = 0;
     T1CONbits.T1CKPS0 = 1;
-    T1CONbits.T1CKPS1 = 1;
+    T1CONbits.T1CKPS1 = 0;
 
     TMR1L = 0xDC;
     TMR1H = 0x0B;
@@ -2324,22 +2226,113 @@ void iniciaPinos(void)
     PORTBbits.RB7 = 0;
 
     PORTCbits.RC0 = 0;
-    PORTCbits.RC1 = 0;
-    PORTCbits.RC2 = 0;
-    PORTCbits.RC3 = 0;
+    PORTCbits.RC1 = 1;
+    PORTCbits.RC2 = 1;
+    PORTCbits.RC3 = 1;
     PORTCbits.RC4 = 0;
     PORTCbits.RC5 = 0;
     PORTCbits.RC6 = 0;
     PORTCbits.RC7 = 0;
 
-    PORTDbits.RD0 = 0;
+    PORTDbits.RD0 = 1;
     PORTDbits.RD1 = 0;
-    PORTDbits.RD2 = 0;
+    PORTDbits.RD2 = 1;
     PORTDbits.RD3 = 0;
-    PORTDbits.RD4 = 0;
+    PORTDbits.RD4 = 1;
     PORTDbits.RD5 = 0;
-    PORTDbits.RD6 = 0;
-    PORTDbits.RD7 = 0;
+    PORTDbits.RD6 = 1;
+    PORTDbits.RD7 = 1;
 
+
+    RD5 = 1;
+    RD3 = 1;
+    RD1 = 1;
+    RC0 = 1;
+
+    return;
+}
+void controleEstufas(void)
+{
+    if(valor_entry1 <= 64)
+    {
+
+
+        estufaUm();
+    }
+    else if(valor_entry1 <= 128)
+    {
+
+
+        estufaUm();
+        estufaDois();
+    }
+    else if(valor_entry1 > 64 && valor_entry1 <= 192)
+    {
+
+
+        estufaUm();
+        estufaDois();
+        estufaTres();
+    }
+    else if(valor_entry1 > 64 && valor_entry1 <= 256)
+    {
+
+
+        estufaUm();
+        estufaDois();
+        estufaTres();
+        estufaQuatro();
+    }
+
+
+    return;
+}
+
+void estufaUm(void)
+{
+    if(valor_entry3 <= 128)
+    {
+        RC7 = 1;
+    }
+    else
+    {
+        RC7 = 0;
+    }
+    return;
+}
+void estufaDois(void)
+{
+    if(valor_entry4 <= 128)
+    {
+        RC6 = 1;
+    }
+    else
+    {
+        RC6 = 0;
+    }
+    return;
+}
+void estufaTres(void)
+{
+    if(valor_entry5 < 128)
+    {
+       RC5 = 1;
+    }
+    else
+    {
+        RC5 = 0;
+    }
+    return;
+}
+void estufaQuatro(void)
+{
+    if(valor_entry6 < 128)
+    {
+        RC4 = 1;
+    }
+    else
+    {
+       RC4 = 0;
+    }
     return;
 }
