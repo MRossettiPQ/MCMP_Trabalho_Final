@@ -23,10 +23,11 @@
 //%%%%%%%%%%%%%%%%%%%%%% DEFINE VARIAVEIS PARA RECEBER ANALOGICO %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
 //=======CHUVA============NrEstufas===========SOL==============SOLO1===============SOLO2================SOLO3===============SOLO4=========
 float valor_entry0 = 0, valor_entry1 = 0, valor_entry2 = 0, valor_entry3 = 257, valor_entry4 = 257, valor_entry5 = 257, valor_entry6 = 257;
-
+int sentido = 0;
 
 void recolheTela(void);
 void expandeTela(void);
+void paraTela(void);
 
 void lerSensores(void);
 void atualizaLCD(void);
@@ -47,20 +48,34 @@ int main()
     while(1)
     {    
         lerSensores();
-        //FUN플O PARA RECEBER AGUA DA CHUVA
-        if(valor_entry0 > 192 && RA4 == 0) //RECOLHE TELA - 
+        atualizaLCD();           
+        //Enable Motor
+        RD5 = 1;
+        RD3 = 1;
+        RD1 = 1;
+        RC0 = 1;
+        
+        if((int)valor_entry0 >= 192) //RECOLHE TELA - 
         {
+            //FUN플O PARA RECEBER AGUA DA CHUVA
             recolheTela();
         }
-        //FUN플O PROTEGER SOL FORTE
-        if(valor_entry2 > 125 && RB3 == 0)  //RECOLHE TELA -
+        else
         {
+            //FUN플O PROTEGER SOL FORTE
             expandeTela();
-        }    
+        }
+        
+        if((RB3 == 1)|| (RA4 == 1))
+        {
+            paraTela();
+        }
+        
+        
         //FUN플O DE REGAR PLANTAS
         controleEstufas();
         
-        __delay_ms(500);
+        __delay_ms(1000);
     }
     return 0;
 }
@@ -68,20 +83,34 @@ void __interrupt() TrataINT(void)
 { 
     if(INTF == 1)
     {
-        CLRWDT (); 
-        recolheTela();
+        while(RB0 == 1)
+        {   
+            CLRWDT (); 
+            recolheTela();
+        }
+        INTF = 0;
     }
     else if (TMR1IF == 1)
     { 
-        CLRWDT (); 
-        atualizaLCD();        
+        CLRWDT ();      
         TMR1IF = 0;
         TMR1L = 0xDC;
         TMR1H = 0x0B;
     }
-    INTF = 0;
     return;
 }   
+void paraTela(void)
+{
+    RD4 = 1;
+    RC1 = 1;
+    RD2 = 1;
+    RD6 = 1;
+
+    RD0 = 1;
+    RC3 = 1;
+    RC2 = 1;
+    RD7 = 1;      
+}
 void lerSensores(void)
 {
     //Sensor Chuva !!!!!!!! AN0
@@ -91,7 +120,7 @@ void lerSensores(void)
     ADCON0bits.CHS2 = 0;                                //configura canal 0 como entrada anal?gica
        
     ADCON0bits.GO = 1;                                  //converte
-    __delay_us(5);                                     //tempo de convers?o
+    __delay_us(50);                                     //tempo de convers?o
     valor_entry0 = ADRESH;                              // passa valores convertido do reg para a vari?vel
     
     //Sensor Agua !!!!!!!! AN1
@@ -101,7 +130,7 @@ void lerSensores(void)
     ADCON0bits.CHS2 = 0;                                //configura canal 0 como entrada anal?gica
        
     ADCON0bits.GO = 1;                                  //converte
-    __delay_us(5);                                     //tempo de convers?o
+    __delay_us(50);                                     //tempo de convers?o
     valor_entry1 = ADRESH;                              // passa valores convertido do reg para a vari?vel    
     
     //Sensor Luz!!!!!!!! AN2
@@ -111,7 +140,7 @@ void lerSensores(void)
     ADCON0bits.CHS2 = 0;                                //configura canal 0 como entrada anal?gica
        
     ADCON0bits.GO = 1;                                  //converte
-    __delay_us(5);                                     //tempo de convers?o
+    __delay_us(50);                                     //tempo de convers?o
     valor_entry2 = ADRESH;                              // passa valores convertido do reg para a vari?vel    
         //Sensor Solo 1 !!!!!!!! AN3
     //Seleciona canal de entrada 0 como entrada anal?gica
@@ -120,7 +149,7 @@ void lerSensores(void)
     ADCON0bits.CHS2 = 0;                                //configura canal 0 como entrada anal?gica
        
     ADCON0bits.GO = 1;                                  //converte
-    __delay_us(5);                                     //tempo de convers?o
+    __delay_us(50);                                     //tempo de convers?o
     valor_entry3 = ADRESH;                              // passa valores convertido do reg para a vari?vel    
     //Sensor Solo 2 !!!!!!!! AN4
     //Seleciona canal de entrada 0 como entrada anal?gica
@@ -129,7 +158,7 @@ void lerSensores(void)
     ADCON0bits.CHS2 = 1;                                //configura canal 0 como entrada anal?gica
        
     ADCON0bits.GO = 1;                                  //converte
-    __delay_us(5);                                     //tempo de convers?o
+    __delay_us(50);                                     //tempo de convers?o
     valor_entry4 = ADRESH;                              // passa valores convertido do reg para a vari?vel    
     
     //Sensor Solo 3 !!!!!!!! AN5
@@ -139,7 +168,7 @@ void lerSensores(void)
     ADCON0bits.CHS2 = 1;                                //configura canal 0 como entrada anal?gica
        
     ADCON0bits.GO = 1;                                  //converte
-    __delay_us(5);                                     //tempo de convers?o
+    __delay_us(50);                                     //tempo de convers?o
     valor_entry5 = ADRESH;                              // passa valores convertido do reg para a vari?vel    
     
 
@@ -150,14 +179,14 @@ void lerSensores(void)
     ADCON0bits.CHS2 = 1;                                //configura canal 0 como entrada anal?gica
        
     ADCON0bits.GO = 1;                                  //converte
-    __delay_us(5);                                     //tempo de convers?o
+    __delay_us(10);                                     //tempo de convers?o
     valor_entry6 = ADRESH;                              // passa valores convertido do reg para a vari?vel
     return;   
 }
 void recolheTela(void)
 {
     if(RA4 == 0)
-    {   
+    {       
         //movimenta
         RD4 = 0;
         RC1 = 1;
@@ -168,36 +197,8 @@ void recolheTela(void)
         RC3 = 1;
         RC2 = 0;
         RD7 = 1;
-    }
-    else
-    {
-        //para motor
-        RD4 = 1;
-        RC1 = 1;
-        RD2 = 1;
-        RD6 = 1;
-
-        RD0 = 1;
-        RC3 = 1;
-        RC2 = 1;
-        RD7 = 1;
-    }
-    return;
-}
-void expandeTela(void)
-{
-    if(RB3 == 0)
-    {
-       //movimenta
-        RD4 = 1;
-        RC1 = 0;
-        RD2 = 1;
-        RD6 = 0;
-
-        RD0 = 1;
-        RC3 = 0;
-        RC2 = 1;
-        RD7 = 0;
+        
+        __delay_ms(15);
     }
     else
     {       
@@ -214,6 +215,39 @@ void expandeTela(void)
     }
     return;
 }
+void expandeTela(void)
+{
+    if(RB3 == 0)
+    {    
+       //movimenta
+        RD4 = 1;
+        RC1 = 0;
+        RD2 = 1;
+        RD6 = 0;
+
+        RD0 = 1;
+        RC3 = 0;
+        RC2 = 1;
+        RD7 = 0;
+        
+        __delay_ms(15);
+    }
+    else
+    {       
+        //para motor
+        RD4 = 1;
+        RC1 = 1;
+        RD2 = 1;
+        RD6 = 1;
+
+        RD0 = 1;
+        RC3 = 1;
+        RC2 = 1;
+        RD7 = 1;
+    }
+    return;
+}
+
 void atualizaLCD(void)
 {
     //%%%%%%%%%%%%%%%%%%%%%% DEFINE BUFFER LCD %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
@@ -301,29 +335,23 @@ void iniciaPinos(void)
     PORTBbits.RB7 = 0;
     
     PORTCbits.RC0 = 0;
-    PORTCbits.RC1 = 1;
-    PORTCbits.RC2 = 1;
-    PORTCbits.RC3 = 1;
+    PORTCbits.RC1 = 0;
+    PORTCbits.RC2 = 0;
+    PORTCbits.RC3 = 0;
     PORTCbits.RC4 = 0;
     PORTCbits.RC5 = 0;
     PORTCbits.RC6 = 0;
     PORTCbits.RC7 = 0;
     
-    PORTDbits.RD0 = 1;
+    PORTDbits.RD0 = 0;
     PORTDbits.RD1 = 0;
-    PORTDbits.RD2 = 1;
+    PORTDbits.RD2 = 0;
     PORTDbits.RD3 = 0;
-    PORTDbits.RD4 = 1;
+    PORTDbits.RD4 = 0;
     PORTDbits.RD5 = 0;
-    PORTDbits.RD6 = 1;
-    PORTDbits.RD7 = 1;
-    
-    //Enable Motor
-    RD5 = 1;
-    RD3 = 1;
-    RD1 = 1;
-    RC0 = 1;
-    
+    PORTDbits.RD6 = 0;
+    PORTDbits.RD7 = 0;
+       
     return;
 }
 void controleEstufas(void)
@@ -333,6 +361,9 @@ void controleEstufas(void)
         //&&&&&&&&&&&&&&&&&& Funcao Sensor solo 2&&&&&&&&&&&&&&&
         //Cuida estufa 1
         estufaUm();
+        RC6 = 0;
+        RC5 = 0;
+        RC4 = 0;
     }
     else if(valor_entry1 <= 128)
     {
@@ -340,6 +371,8 @@ void controleEstufas(void)
         //Cuida estufa 2
         estufaUm();
         estufaDois();
+        RC5 = 0;
+        RC4 = 0;
     }
     else if(valor_entry1 > 64 && valor_entry1 <= 192)
     {
@@ -348,6 +381,7 @@ void controleEstufas(void)
         estufaUm();
         estufaDois();
         estufaTres();
+        RC4 = 0;
     }
     else if(valor_entry1 > 64 && valor_entry1 <= 256)
     {
@@ -362,7 +396,6 @@ void controleEstufas(void)
     //%%%%%%%%%%%%%%%%%%%%%% Final %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%     
     return;
 }
-
 void estufaUm(void)
 {
     if(valor_entry3 <= 128)
