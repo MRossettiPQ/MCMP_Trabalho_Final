@@ -1975,17 +1975,13 @@ int main()
         lerSensores();
         atualizaLCD();
 
-        RD5 = 1;
-        RD3 = 1;
-        RD1 = 1;
-        RC0 = 1;
 
         if((int)valor_entry0 >= 192)
         {
 
             recolheTela();
         }
-        else
+        else if((int)valor_entry2 >= 192)
         {
 
             expandeTela();
@@ -2259,7 +2255,7 @@ void iniciaPinos(void)
     PORTBbits.RB6 = 0;
     PORTBbits.RB7 = 0;
 
-    PORTCbits.RC0 = 0;
+    PORTCbits.RC0 = 1;
     PORTCbits.RC1 = 0;
     PORTCbits.RC2 = 0;
     PORTCbits.RC3 = 0;
@@ -2269,11 +2265,11 @@ void iniciaPinos(void)
     PORTCbits.RC7 = 0;
 
     PORTDbits.RD0 = 0;
-    PORTDbits.RD1 = 0;
+    PORTDbits.RD1 = 1;
     PORTDbits.RD2 = 0;
-    PORTDbits.RD3 = 0;
+    PORTDbits.RD3 = 1;
     PORTDbits.RD4 = 0;
-    PORTDbits.RD5 = 0;
+    PORTDbits.RD5 = 1;
     PORTDbits.RD6 = 0;
     PORTDbits.RD7 = 0;
 
@@ -2299,7 +2295,7 @@ void controleEstufas(void)
         RC5 = 0;
         RC4 = 0;
     }
-    else if(valor_entry1 > 64 && valor_entry1 <= 192)
+    else if((valor_entry1 > 64) && (valor_entry1 <= 192))
     {
 
 
@@ -2308,14 +2304,14 @@ void controleEstufas(void)
         estufaTres();
         RC4 = 0;
     }
-    else if(valor_entry1 > 64 && valor_entry1 <= 256)
+    else if((valor_entry1 > 64) && (valor_entry1 <= 280))
     {
 
 
+        estufaQuatro();
         estufaUm();
         estufaDois();
         estufaTres();
-        estufaQuatro();
     }
 
 
@@ -2323,7 +2319,7 @@ void controleEstufas(void)
 }
 void estufaUm(void)
 {
-    if(valor_entry3 <= 128)
+    if((int)valor_entry3 <= 128)
     {
         RC7 = 1;
     }
@@ -2335,7 +2331,7 @@ void estufaUm(void)
 }
 void estufaDois(void)
 {
-    if(valor_entry4 <= 128)
+    if((int)valor_entry4 <= 128)
     {
         RC6 = 1;
     }
@@ -2347,25 +2343,19 @@ void estufaDois(void)
 }
 void estufaTres(void)
 {
-    if(valor_entry5 < 128)
+    if((int)valor_entry5 < 128)
     {
        RC5 = 1;
     }
     else
     {
-        RC5 = 0;
+       RC5 = 0;
     }
     return;
 }
 void estufaQuatro(void)
 {
-    if(valor_entry6 < 128)
-    {
-        RC4 = 1;
-    }
-    else
-    {
-       RC4 = 0;
-    }
+    int valorLido = valor_entry6;
+
     return;
 }
